@@ -18,5 +18,8 @@ int main(void)
 	cout << "Hello World!" << endl;
 	SetConsoleTextAttribute(hConsole, saved_colors);
 
+	cout << "Press enter to finish" << endl;
+
 	getchar();
+	return 0;
 }
