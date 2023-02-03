@@ -27,12 +27,14 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	{
 		//Calculate next outer vertex
 		currentRotation += rotationAmount;
-		//vector3 newVertex();
+		float xPos = sin(currentRotation) * a_fRadius;
+		float yPos = cos(currentRotation) * a_fRadius;
+		vector3 newVertex(xPos, yPos, 0.0f);
 		AddTri(origin,
 			outerVertex,
-			vector3(0.77f, 0.77f, 0.0f));
+			newVertex);
 		//Set outerVertex to new calculated vertex for next triangle
-		//outerVertex = newVertex;
+		outerVertex = newVertex;
 	}
 
 	// Adding information about color
@@ -193,7 +195,7 @@ void MyMesh::AddTri(vector3 a_vBottomLeft, vector3 a_vBottomRight, vector3 a_vTo
 {
 	//C
 	//| \
-		//A--B
+	//A--B
 //This will make the triangle A->B->C 
 	AddVertexPosition(a_vBottomLeft);
 	AddVertexPosition(a_vBottomRight);

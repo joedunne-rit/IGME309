@@ -71,7 +71,7 @@ void AppClass::InitOpenGL(void)
 }
 void AppClass::InitShaders(void)
 {
-	m_uShaderProgramID = LoadShaders("Shaders//BasicColor.vs", "Shaders//BasicColor.fs");
+	m_uShaderProgramID = LoadShaders("Shaders//BasicColor.vs", "Shaders//BasicColorInvert.fs");
 	glUseProgram(m_uShaderProgramID);
 }
 void AppClass::InitVariables(void)
@@ -106,6 +106,7 @@ void AppClass::InitVariables(void)
 	// Color attribute
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, attributeCount * sizeof(glm::vec3), (GLvoid*)(1 * sizeof(glm::vec3)));
+
 }
 void AppClass::ProcessKeyboard(sf::Event a_event)
 {
@@ -120,7 +121,13 @@ void AppClass::ProcessKeyboard(sf::Event a_event)
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0))
 		m_v3Color = glm::vec3(-1.0f, -1.0f, -1.0f);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4))
-		m_v3Color = glm::vec3(1.0f, 1.0f, 1.0f);
+	{
+		if (invertColor)
+			invertColor = false;
+		else
+			invertColor = true;
+	}
+		
 }
 void AppClass::Display(void)
 {
@@ -129,7 +136,9 @@ void AppClass::Display(void)
 
 	//read uniforms and send values
 	GLuint SolidColor = glGetUniformLocation(m_uShaderProgramID, "SolidColor");
+	GLuint Complimentary = glGetUniformLocation(m_uShaderProgramID, "Complimentary");
 	glUniform3f(SolidColor, m_v3Color.r, m_v3Color.g, m_v3Color.b);
+	glUniform1i(Complimentary, invertColor);
 
 	//draw content
 	glDrawArrays(GL_TRIANGLES, 0, 3);
