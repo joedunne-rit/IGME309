@@ -27,8 +27,8 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	{
 		//Calculate next outer vertex
 		currentRotation += rotationAmount;
-		float xPos = sin(currentRotation) * a_fRadius;
-		float yPos = cos(currentRotation) * a_fRadius;
+		float xPos = cos(currentRotation) * a_fRadius;
+		float yPos = sin(currentRotation) * a_fRadius;
 		vector3 newVertex(xPos, yPos, 0.0f);
 		AddTri(origin,
 			outerVertex,

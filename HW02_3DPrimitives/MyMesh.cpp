@@ -60,8 +60,30 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	//Tracks current subdivision rotation
+	float currentRotation = 0.0f;
+	float rotationAmount = (2 * 3.14159) / a_nSubdivisions;
+
+	vector3 origin(0.0f, 0.0f, 0.0f); //Origin point
+	vector3 pointCurrent(a_fRadius, 0.0f, 0.0f); //Current rotation point
+	vector3 pointTop(0.0f, a_fHeight, 0.0f); //Cone tip point
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		//Calculates vertex position for next rotation
+		currentRotation += rotationAmount;
+		float xPos = cos(currentRotation) * a_fRadius;
+		float yPos = sin(currentRotation) * a_fRadius;
+
+		vector3 pointNext(xPos, 0.0f, yPos);
+		//draw polygon on base
+		AddTri(origin, pointCurrent, pointNext);
+		//draw polygon connecting top
+		AddTri(pointCurrent, pointTop, pointNext);
+
+		//Update current point
+		pointCurrent = pointNext;
+	}
 	// -------------------------------
 
 	// Adding information about color
@@ -84,8 +106,34 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	float currentRotation = 0.0f;
+	float rotationAmount = (2 * 3.14159) / a_nSubdivisions;
+
+	vector3 origin(0.0f, 0.0f, 0.0f); //Origin point
+	vector3 pointTop(0.0f, a_fHeight, 0.0f); //Origin point at other side of cylinder
+	vector3 pointCurrent(a_fRadius, 0.0f, 0.0f); //Current rotation point
+	vector3 pointTopCurrent(a_fRadius, a_fHeight, 0.0f); //Current rotation for other cylinder base
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		currentRotation += rotationAmount;
+		float xPos = cos(currentRotation) * a_fRadius;
+		float yPos = sin(currentRotation) * a_fRadius;
+
+		vector3 pointNext(xPos, 0.0f, yPos); //Next rotation point
+		vector3 pointTopNext(xPos, a_fHeight, yPos); //Next rotation point for other cylinder base
+
+		//draw polygon on bottom base
+		AddTri(origin, pointCurrent, pointNext);
+		//draw polygon on top base
+		AddTri(pointTop, pointTopNext, pointTopCurrent);
+		//draw quad connecting two previous polygons
+		AddQuad(pointNext, pointCurrent, pointTopNext, pointTopCurrent);
+
+		//Update current points
+		pointCurrent = pointNext;
+		pointTopCurrent = pointTopNext;
+	}
 	// -------------------------------
 
 	// Adding information about color
@@ -114,8 +162,43 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	float currentRotation = 0.0f;
+	float rotationAmount = (2 * 3.14159) / a_nSubdivisions;
+
+	vector3 innerPoint(a_fInnerRadius, 0.0f, 0.0f); //Current inner point for rotation
+	vector3 outerPoint(a_fOuterRadius, 0.0f, 0.0f); //Current outer point for rotation
+	vector3 innerPointTop(a_fInnerRadius, a_fHeight, 0.0f); //Current top inner point for rotation
+	vector3 outerPointTop(a_fOuterRadius, a_fHeight, 0.0f); //Current top outer point for rotation
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		//Calculate next rotation points for inner and outer radiuses
+		currentRotation += rotationAmount;
+		float xPosInner = cos(currentRotation) * a_fInnerRadius;
+		float yPosInner = sin(currentRotation) * a_fInnerRadius;
+		float xPosOuter = cos(currentRotation) * a_fOuterRadius;
+		float yPosOuter = sin(currentRotation) * a_fOuterRadius;
+
+		//Points for next rotation, names respective to their previous points
+		vector3 innerPointNext(xPosInner, 0.0f, yPosInner);
+		vector3 outerPointNext(xPosOuter, 0.0f, yPosOuter);
+		vector3 innerPointTopNext(xPosInner, a_fHeight, yPosInner);
+		vector3 outerPointTopNext(xPosOuter, a_fHeight, yPosOuter);
+
+		//draw bottom side quad
+		AddQuad(innerPoint, outerPoint, innerPointNext, outerPointNext);
+		//draw top side quad
+		AddQuad(innerPointTopNext, outerPointTopNext, innerPointTop, outerPointTop);
+		//draw outer wall quad
+		AddQuad(outerPointNext, outerPoint, outerPointTopNext, outerPointTop);
+		//draw inner wall quad
+		AddQuad(innerPoint, innerPointNext, innerPointTop, innerPointTopNext);
+
+		innerPoint = innerPointNext;
+		outerPoint = outerPointNext;
+		innerPointTop = innerPointTopNext;
+		outerPointTop = outerPointTopNext;
+	}
 	// -------------------------------
 
 	// Adding information about color
@@ -147,7 +230,32 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	float currentRotation = 0.0f;
+	float rotationAmount = (2 * 3.14159) / a_nSubdivisionsB;
+	float circleRotation = 0.0f;
+	float circleRotationAmount = (2 * 3.14159) / a_nSubdivisionsA;
+
+	currentRotation += rotationAmount;
+	float xPos = cos(currentRotation) * a_fOuterRadius;
+	float yPos = sin(currentRotation) * a_fOuterRadius;
+
+	vector3 circle1Current(a_fOuterRadius, 0.0f, 0.0f);
+	vector3 circle2Current(xPos, 0.0f, yPos);
+	for (int i = 0; i < a_nSubdivisionsB; i++)
+	{
+		for (int j = 0; j < a_nSubdivisionsA; j++)
+		{
+			circleRotation += circleRotationAmount;
+			float circleXPos = cos(circleRotation) * (a_fOuterRadius - a_fInnerRadius / 2);
+			float circleYPos = sin(circleRotation) * (a_fOuterRadius - a_fInnerRadius / 2);
+			//As long as I have a point and its relative distance from the center, I can calculate the same point on the next circle
+			//Base circle xPos off of distance from absolute center?
+			//vector3 circle1Next = ()
+		}
+		//Reset circleRotation
+		circleRotation = 0.0f;
+	}
 	// -------------------------------
 
 	// Adding information about color
