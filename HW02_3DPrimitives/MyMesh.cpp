@@ -231,30 +231,50 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 
 	// Replace this with your code
 	//GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	//Calculate rotation amounts for torus and inner circles
 	float currentRotation = 0.0f;
 	float rotationAmount = (2 * 3.14159) / a_nSubdivisionsB;
 	float circleRotation = 0.0f;
 	float circleRotationAmount = (2 * 3.14159) / a_nSubdivisionsA;
-
-	currentRotation += rotationAmount;
-	float xPos = cos(currentRotation) * a_fOuterRadius;
-	float yPos = sin(currentRotation) * a_fOuterRadius;
+	float circleRadius = a_fOuterRadius - a_fInnerRadius;
+	
+	//Calculates first vertex & next vertex on torus rotation
+	float nextRotation = currentRotation + rotationAmount;
+	float xPos = cos(nextRotation) * a_fOuterRadius;
+	float zPos = sin(nextRotation) * a_fOuterRadius;
 
 	vector3 circle1Current(a_fOuterRadius, 0.0f, 0.0f);
-	vector3 circle2Current(xPos, 0.0f, yPos);
+	vector3 circle2Current(xPos, 0.0f, zPos);
 	for (int i = 0; i < a_nSubdivisionsB; i++)
 	{
 		for (int j = 0; j < a_nSubdivisionsA; j++)
 		{
 			circleRotation += circleRotationAmount;
+			//Calculate x and y positions within circle
 			float circleXPos = cos(circleRotation) * (a_fOuterRadius - a_fInnerRadius / 2);
 			float circleYPos = sin(circleRotation) * (a_fOuterRadius - a_fInnerRadius / 2);
-			//As long as I have a point and its relative distance from the center, I can calculate the same point on the next circle
-			//Base circle xPos off of distance from absolute center?
-			//vector3 circle1Next = ()
+			//Calculate total distance from torus center
+			float distanceFromCenter = a_fInnerRadius + circleRadius + circleXPos;
+			//Calculate next position on circles, finding x and z based on cos/sin of current distanceFromCenter, and y from circleY
+			vector3 circle1Next(cos(currentRotation) * distanceFromCenter, circleYPos, sin(currentRotation) * distanceFromCenter);
+			vector3 circle2Next(cos(nextRotation) * distanceFromCenter, circleYPos, sin(nextRotation) * distanceFromCenter);
+			AddQuad(circle1Current, circle1Next, circle2Current, circle2Next);
+
+			//Update current vertexes
+			circle1Current = circle1Next;
+			circle2Current = circle2Next;
 		}
 		//Reset circleRotation
 		circleRotation = 0.0f;
+		//Calculate next rotation on torus
+		currentRotation = nextRotation;
+		nextRotation += rotationAmount;
+		//Calculate next vertex on torus rotation, & update current one
+		xPos = cos(nextRotation) * a_fOuterRadius;
+		zPos = sin(nextRotation) * a_fOuterRadius;
+		circle1Current = circle2Current;
+		vector3 newVector(xPos, 0.0f, zPos);
+		circle2Current = newVector;
 	}
 	// -------------------------------
 
@@ -280,7 +300,46 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	vector3 origin(0.0f, a_fRadius, 0.0f);
+	vector3 endPoint(0.0f, -a_fRadius, 0.0f);
+
+	float rotationZ = 0;
+	float rotationY = 0;
+	float rotationAmountZ = 3.14159 / a_nSubdivisions;
+	float rotationAmountY = (2 * 3.14159) / a_nSubdivisions;
+
+	rotationZ += rotationAmountZ;
+
+	float xPos = cos(rotationZ) * a_fRadius;
+	float yPos = sin(rotationZ) * a_fRadius;
+
+	vector3 currentPoint(xPos, yPos, 0.0f);
+	
+	//yPos will remain same for all current vertexes
+	//Generate polygons for sphere top
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		rotationY += rotationAmountY;
+		vector3 nextPoint(cos(rotationY) * xPos, yPos, sin(rotationY) * xPos);
+		AddTri(currentPoint, origin, nextPoint);
+		currentPoint = nextPoint;
+	}
+
+	//Generate polygons for middle of sphere
+	for (int i = 0; i < a_nSubdivisions - 2; i++)
+	{
+		for (int j = 0; j < a_nSubdivisions; j++)
+		{
+
+		}
+	}
+
+	//Generate polygons for bottom of sphere
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+
+	}
 	// -------------------------------
 
 	// Adding information about color
