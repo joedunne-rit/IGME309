@@ -236,14 +236,15 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 	float rotationAmount = (2 * 3.14159) / a_nSubdivisionsB;
 	float circleRotation = 0.0f;
 	float circleRotationAmount = (2 * 3.14159) / a_nSubdivisionsA;
-	float circleRadius = a_fOuterRadius - a_fInnerRadius;
+	float circleDiameter = a_fInnerRadius * 2; //Diameter of inner circle
+	float outerEdgeRadius = a_fOuterRadius + a_fInnerRadius; //Radius from center to outside edge
 	
 	//Calculates first vertex & next vertex on torus rotation
 	float nextRotation = currentRotation + rotationAmount;
-	float xPos = cos(nextRotation) * a_fOuterRadius;
-	float zPos = sin(nextRotation) * a_fOuterRadius;
+	float xPos = cos(nextRotation) * outerEdgeRadius;
+	float zPos = sin(nextRotation) * outerEdgeRadius;
 
-	vector3 circle1Current(a_fOuterRadius, 0.0f, 0.0f);
+	vector3 circle1Current(outerEdgeRadius, 0.0f, 0.0f);
 	vector3 circle2Current(xPos, 0.0f, zPos);
 	for (int i = 0; i < a_nSubdivisionsB; i++)
 	{
@@ -251,10 +252,10 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 		{
 			circleRotation += circleRotationAmount;
 			//Calculate x and y positions within circle
-			float circleXPos = cos(circleRotation) * (a_fOuterRadius - a_fInnerRadius / 2);
-			float circleYPos = sin(circleRotation) * (a_fOuterRadius - a_fInnerRadius / 2);
+			float circleXPos = cos(circleRotation) * (a_fInnerRadius);
+			float circleYPos = sin(circleRotation) * (a_fInnerRadius);
 			//Calculate total distance from torus center
-			float distanceFromCenter = a_fInnerRadius + circleRadius + circleXPos;
+			float distanceFromCenter = a_fOuterRadius + circleXPos;
 			//Calculate next position on circles, finding x and z based on cos/sin of current distanceFromCenter, and y from circleY
 			vector3 circle1Next(cos(currentRotation) * distanceFromCenter, circleYPos, sin(currentRotation) * distanceFromCenter);
 			vector3 circle2Next(cos(nextRotation) * distanceFromCenter, circleYPos, sin(nextRotation) * distanceFromCenter);
@@ -270,8 +271,8 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 		currentRotation = nextRotation;
 		nextRotation += rotationAmount;
 		//Calculate next vertex on torus rotation, & update current one
-		xPos = cos(nextRotation) * a_fOuterRadius;
-		zPos = sin(nextRotation) * a_fOuterRadius;
+		xPos = cos(nextRotation) * outerEdgeRadius;
+		zPos = sin(nextRotation) * outerEdgeRadius;
 		circle1Current = circle2Current;
 		vector3 newVector(xPos, 0.0f, zPos);
 		circle2Current = newVector;
@@ -327,11 +328,27 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	}
 
 	//Generate polygons for middle of sphere
-	for (int i = 0; i < a_nSubdivisions - 2; i++)
+	if (a_nSubdivisions >= 3)
 	{
-		for (int j = 0; j < a_nSubdivisions; j++)
+		for (int i = 0; i < a_nSubdivisions - 2; i++)
 		{
-
+			rotationZ += rotationAmountZ;
+			float xPosNext = cos(rotationZ) * a_fRadius;
+			float yPosNext = sin(rotationZ) * a_fRadius;
+			vector3 currentPoint2(xPosNext, yPosNext, 0.0f);
+			rotationY = 0;
+			for (int j = 0; j < a_nSubdivisions; j++)
+			{
+				rotationY += rotationAmountY;
+				vector3 nextPoint(cos(rotationY) * xPos, yPos, sin(rotationY) * xPos);
+				vector3 nextPoint2(cos(rotationY) * xPosNext, yPosNext, sin(rotationY) * xPosNext);
+				AddQuad(currentPoint, currentPoint2, nextPoint, nextPoint2);
+				currentPoint = nextPoint;
+				currentPoint2 = nextPoint2;
+			}
+			currentPoint = currentPoint2;
+			xPos = xPosNext;
+			yPos = yPosNext;
 		}
 	}
 
