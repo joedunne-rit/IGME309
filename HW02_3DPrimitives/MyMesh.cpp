@@ -312,8 +312,8 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 	rotationZ += rotationAmountZ;
 
-	float xPos = cos(rotationZ) * a_fRadius;
-	float yPos = sin(rotationZ) * a_fRadius;
+	float xPos = sin(rotationZ) * a_fRadius;
+	float yPos = cos(rotationZ) * a_fRadius;
 
 	vector3 currentPoint(xPos, yPos, 0.0f);
 	
@@ -333,8 +333,8 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 		for (int i = 0; i < a_nSubdivisions - 2; i++)
 		{
 			rotationZ += rotationAmountZ;
-			float xPosNext = cos(rotationZ) * a_fRadius;
-			float yPosNext = sin(rotationZ) * a_fRadius;
+			float xPosNext = sin(rotationZ) * a_fRadius;
+			float yPosNext = cos(rotationZ) * a_fRadius;
 			vector3 currentPoint2(xPosNext, yPosNext, 0.0f);
 			rotationY = 0;
 			for (int j = 0; j < a_nSubdivisions; j++)
@@ -342,20 +342,24 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 				rotationY += rotationAmountY;
 				vector3 nextPoint(cos(rotationY) * xPos, yPos, sin(rotationY) * xPos);
 				vector3 nextPoint2(cos(rotationY) * xPosNext, yPosNext, sin(rotationY) * xPosNext);
-				AddQuad(currentPoint, currentPoint2, nextPoint, nextPoint2);
+				AddQuad(currentPoint2, currentPoint, nextPoint2, nextPoint);
 				currentPoint = nextPoint;
 				currentPoint2 = nextPoint2;
 			}
+			//AddTri(currentPoint, vector3(0,0,0), currentPoint2);
 			currentPoint = currentPoint2;
 			xPos = xPosNext;
 			yPos = yPosNext;
 		}
 	}
-
+	rotationY = 0;
 	//Generate polygons for bottom of sphere
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
-
+		rotationY += rotationAmountY;
+		vector3 nextPoint(cos(rotationY) * xPos, yPos, sin(rotationY) * xPos);
+		AddTri(currentPoint, nextPoint, endPoint);
+		currentPoint = nextPoint;
 	}
 	// -------------------------------
 
