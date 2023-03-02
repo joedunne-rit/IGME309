@@ -48,7 +48,63 @@ void Application::Display(void)
 	//matrix4 m4Model = m4Translate * m4Scale;
 	matrix4 m4Model = m4Scale * m4Translate;
 
-	m_pMesh->Render(m4Projection, m4View, m4Model);
+	//row 3
+	float position = -3.0f;
+	for (int i = 0; i < 7; i++)
+	{
+		m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(position, 0.0f, 0.0f)));
+		position += 1.0f;
+	}
+
+	//row 2
+	m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(-2.0f, 1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(2.0f, 1.0f, 0.0f)));
+
+	//row 1
+	m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(-3.0f, 2.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(3.0f, 2.0f, 0.0f)));
+
+	//row 4
+	position = -4.0f;
+	for (int i = 0; i < 9; i++)
+	{
+		if (i != 2 && i != 6)
+		{
+			m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(position, -1.0f, 0.0f)));
+		}
+		position += 1.0f;
+	}
+
+	//row 5
+	position = -5.0f;
+	for (int i = 0; i < 11; i++)
+	{
+		m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(position, -2.0f, 0.0f)));
+		position += 1.0f;
+	}
+
+	//row 6
+	position = -5.0f;
+	for (int i = 0; i < 11; i++)
+	{
+		if (i != 1 && i != 9)
+		{
+			m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(position, -3.0f, 0.0f)));
+		}
+		position += 1.0f;
+	}
+
+	//row 7
+	m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(-5.0f, -4.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(-3.0f, -4.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(3.0f, -4.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(5.0f, -4.0f, 0.0f)));
+
+	//row 8
+	m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(-2.0f, -5.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(-1.0f, -5.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(1.0f, -5.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, glm::translate(m4Model, vector3(2.0f, -5.0f, 0.0f)));
 
 	// draw a skybox
 	m_pModelMngr->AddSkyboxToRenderList();
