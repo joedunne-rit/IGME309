@@ -15,7 +15,6 @@ void MyCamera::SetPositionTargetAndUpward(vector3 a_v3Position, vector3 a_v3Targ
 	}
 	if (a_v3Target != m_v3Target)
 	{
-		//Get angle of rotation around y axis
 		m_v3Target = a_v3Target;
 	}
 	if (a_v3Upward != m_v3Upward)
