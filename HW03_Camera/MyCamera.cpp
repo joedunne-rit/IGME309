@@ -6,7 +6,7 @@ void MyCamera::SetPositionTargetAndUpward(vector3 a_v3Position, vector3 a_v3Targ
 	//TODO:: replace the super call with your functionality
 	//Tip: Changing any positional vector forces you to calculate new directional ones
 	////super::SetPositionTargetAndUpward(a_v3Position, a_v3Target, a_v3Upward);
-	static quaternion m_qOrientation = quaternion();
+	
 	if (a_v3Position != m_v3Position)
 	{
 		m_v3Target += (m_v3Position - a_v3Position);
@@ -60,6 +60,8 @@ void MyCamera::CalculateView(void)
 	//		 it will receive information from the main code on how much these orientations
 	//		 have change so you only need to focus on the directional and positional 
 	//		 vectors. There is no need to calculate any right click process or connections.
+	static quaternion m_qOrientation = quaternion();
+	//use pitchyawroll to update orientation, then apply to m_v3target
 	m_m4View = glm::lookAt(m_v3Position, m_v3Target, m_v3Upward);
 }
 //You can assume that the code below does not need changes unless you expand the functionality
