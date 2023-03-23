@@ -37,21 +37,39 @@ void MyCamera::MoveForward(float a_fDistance)
 	//		 in the _Binary folder you will notice that we are moving 
 	//		 backwards and we never get closer to the plane as we should 
 	//		 because as we are looking directly at it.
+	
+	//Moves forward relative to camera by using camera's m_v3Forward in place of vector3(0.0f, 0.0f, -a_fDistance)
 	m_v3Position += m_v3Forward * a_fDistance;
 	m_v3Target += m_v3Forward * a_fDistance;
 }
 void MyCamera::MoveVertical(float a_fDistance)
 {
 	//Tip:: Look at MoveForward
-	m_v3Position += vector3(0.0f, a_fDistance, 0.0f);
-	m_v3Target += vector3(0.0f, a_fDistance, 0.0f);
+	//Following code used for moving up/down globally, not locally
+	//m_v3Position += vector3(0.0f, a_fDistance, 0.0f);
+	//m_v3Target += vector3(0.0f, a_fDistance, 0.0f);
+	
+	//Performs calculation similar to finding new m_v3Forward, using the desired directional vector instead
+	//Can possibly move this into its own function due to number of uses?
+	//Will avoid for now to ensure changes are only in MyCamera.cpp
+	quaternion q1 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.x) * 30, AXIS_X);
+	vector3 a_v3Upwards = glm::rotate(q1, vector3(0.0f, a_fDistance, 0.0f));
+	quaternion q2 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.y) * 30, AXIS_Y);
+	a_v3Upwards = glm::rotate(q2, a_v3Upwards);
+	m_v3Position += a_v3Upwards;
+	m_v3Target += a_v3Upwards;
 }
 void MyCamera::MoveSideways(float a_fDistance)
 {
 	//Tip:: Look at MoveForward
 	//glm::cross()
-	m_v3Position += vector3(a_fDistance, 0.0f, 0.0f);
-	m_v3Target += vector3(a_fDistance, 0.0f, 0.0f);
+	//Performs calculation similar to finding new m_v3Forward, using the desired directional vector instead
+	quaternion q1 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.x) * 30, AXIS_X);
+	vector3 a_v3Sideways = glm::rotate(q1, vector3(a_fDistance, 0.0f, 0.0f));
+	quaternion q2 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.y) * 30, AXIS_Y);
+	a_v3Sideways = glm::rotate(q2, a_v3Sideways);
+	m_v3Position += a_v3Sideways;
+	m_v3Target += a_v3Sideways;
 }
 void MyCamera::CalculateView(void)
 {
