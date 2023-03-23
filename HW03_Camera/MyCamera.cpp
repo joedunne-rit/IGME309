@@ -37,8 +37,8 @@ void MyCamera::MoveForward(float a_fDistance)
 	//		 in the _Binary folder you will notice that we are moving 
 	//		 backwards and we never get closer to the plane as we should 
 	//		 because as we are looking directly at it.
-	m_v3Position += vector3(0.0f, 0.0f, -a_fDistance);
-	m_v3Target += vector3(0.0f, 0.0f, -a_fDistance);
+	m_v3Position += m_v3Forward * a_fDistance;
+	m_v3Target += m_v3Forward * a_fDistance;
 }
 void MyCamera::MoveVertical(float a_fDistance)
 {
@@ -49,6 +49,7 @@ void MyCamera::MoveVertical(float a_fDistance)
 void MyCamera::MoveSideways(float a_fDistance)
 {
 	//Tip:: Look at MoveForward
+	//glm::cross()
 	m_v3Position += vector3(a_fDistance, 0.0f, 0.0f);
 	m_v3Target += vector3(a_fDistance, 0.0f, 0.0f);
 }
@@ -60,8 +61,15 @@ void MyCamera::CalculateView(void)
 	//		 it will receive information from the main code on how much these orientations
 	//		 have change so you only need to focus on the directional and positional 
 	//		 vectors. There is no need to calculate any right click process or connections.
-	static quaternion m_qOrientation = quaternion();
-	//use pitchyawroll to update orientation, then apply to m_v3target
+
+	//Make quaternions for X and Y rotations
+	quaternion q1 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.x) * 30, AXIS_X);
+	//Apply both of them to a base vector3 forward direction to create a new m_v3Forward
+	m_v3Forward = glm::rotate(q1, vector3(0.0f, 0.0f, -1.0f));
+	quaternion q2 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.y) * 30, AXIS_Y);
+	m_v3Forward = glm::rotate(q2, m_v3Forward);
+	//Set target using new v3Forward
+	m_v3Target = m_v3Forward + m_v3Position;
 	m_m4View = glm::lookAt(m_v3Position, m_v3Target, m_v3Upward);
 }
 //You can assume that the code below does not need changes unless you expand the functionality
