@@ -52,9 +52,9 @@ void MyCamera::MoveVertical(float a_fDistance)
 	//Performs calculation similar to finding new m_v3Forward, using the desired directional vector instead
 	//Can possibly move this into its own function due to number of uses?
 	//Will avoid for now to ensure changes are only in MyCamera.cpp
-	quaternion q1 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.x) * 30, AXIS_X);
+	quaternion q1 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.x) * 50, AXIS_X);
 	vector3 a_v3Upwards = glm::rotate(q1, vector3(0.0f, a_fDistance, 0.0f));
-	quaternion q2 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.y) * 30, AXIS_Y);
+	quaternion q2 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.y) * 50, AXIS_Y);
 	a_v3Upwards = glm::rotate(q2, a_v3Upwards);
 	m_v3Position += a_v3Upwards;
 	m_v3Target += a_v3Upwards;
@@ -64,9 +64,9 @@ void MyCamera::MoveSideways(float a_fDistance)
 	//Tip:: Look at MoveForward
 	//glm::cross()
 	//Performs calculation similar to finding new m_v3Forward, using the desired directional vector instead
-	quaternion q1 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.x) * 30, AXIS_X);
+	quaternion q1 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.x) * 50, AXIS_X);
 	vector3 a_v3Sideways = glm::rotate(q1, vector3(a_fDistance, 0.0f, 0.0f));
-	quaternion q2 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.y) * 30, AXIS_Y);
+	quaternion q2 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.y) * 50, AXIS_Y);
 	a_v3Sideways = glm::rotate(q2, a_v3Sideways);
 	m_v3Position += a_v3Sideways;
 	m_v3Target += a_v3Sideways;
@@ -81,10 +81,10 @@ void MyCamera::CalculateView(void)
 	//		 vectors. There is no need to calculate any right click process or connections.
 
 	//Make quaternions for X and Y rotations
-	quaternion q1 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.x) * 30, AXIS_X);
+	quaternion q1 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.x) * 50, AXIS_X);
 	//Apply both of them to a base vector3 forward direction to create a new m_v3Forward
 	m_v3Forward = glm::rotate(q1, vector3(0.0f, 0.0f, -1.0f));
-	quaternion q2 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.y) * 30, AXIS_Y);
+	quaternion q2 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.y) * 50, AXIS_Y);
 	m_v3Forward = glm::rotate(q2, m_v3Forward);
 	//Set target using new v3Forward
 	m_v3Target = m_v3Forward + m_v3Position;
