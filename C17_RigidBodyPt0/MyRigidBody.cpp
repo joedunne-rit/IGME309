@@ -13,7 +13,10 @@ vector3 MyRigidBody::GetMinGlobal(void) { return m_v3MinG; }
 vector3 MyRigidBody::GetMaxGlobal(void) { return m_v3MaxG; }
 vector3 MyRigidBody::GetHalfWidth(void) { return m_v3HalfWidth; }
 matrix4 MyRigidBody::GetModelMatrix(void) { return m_m4ToWorld; }
-void MyRigidBody::SetModelMatrix(matrix4 a_m4ModelMatrix) { m_m4ToWorld = a_m4ModelMatrix; }
+void MyRigidBody::SetModelMatrix(matrix4 a_m4ModelMatrix) 
+{ 
+	m_m4ToWorld = a_m4ModelMatrix; 
+}
 //Allocation
 void MyRigidBody::Init(void)
 {
