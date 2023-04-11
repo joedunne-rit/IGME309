@@ -6,6 +6,53 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	//TODO: Calculate the SAT algorithm I STRONGLY suggest you use the
 	//Real Time Collision detection algorithm for OBB here but feel free to
 	//implement your own solution.
+	//c = center
+	//e = halfwidth vector3
+	//u = 
+	// typo in pdf, array numbers are not correct
+	//dot product gives projection of one vector onto another vector
+	//glm::Epsilon(float) can give tolerance value
+	//http://www.r-5.org/files/books/computers/algo-list/realtime-3d/Christer_Ericson-Real-Time_Collision_Detection-EN.pdf
+
+	float ra;
+	float rb;
+
+	matrix3 R;
+	matrix3 AbsR;
+
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 3; j++)
+			//R[i][j] = glm::dot();
+
+	vector3 t = m_v3Center - a_pOther->m_v3Center;
+
+	//t = Vector3(glm::dot(t, a.u[0]), glm::dot(t, a.u[1]), glm::dot(t, a.u[2]));
+
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 3; j++)
+			AbsR[i][j] = glm::abs(R[i][j]) + glm::epsilon<float>();
+
+	//test axes
+	for (int i = 0; i < 3; i++) {
+		ra = m_v3HalfWidth[i];
+		rb = a_pOther->m_v3HalfWidth[0] * AbsR[i][0] + a_pOther->m_v3HalfWidth[1] * AbsR[i][1] + a_pOther->m_v3HalfWidth[2] * AbsR[i][2];
+		if (glm::abs(t[i]) > ra + rb)
+		{
+			return 1;
+		}
+	}
+
+	for (int i = 0; i < 3; i++) {
+		ra = m_v3HalfWidth[0] * AbsR[0][i] + m_v3HalfWidth[1] * AbsR[1][i] + m_v3HalfWidth[2] * AbsR[2][i];
+		rb = a_pOther->m_v3HalfWidth[i];
+		if (glm::abs(t[0] * R[0][i] + t[1] * R[1][i] + t[2] * R[2][i]) > ra + rb)
+		{
+			return 1;
+		}
+	}
+
+
+
 	return BTXs::eSATResults::SAT_NONE;
 }
 bool MyRigidBody::IsColliding(MyRigidBody* const a_pOther)
