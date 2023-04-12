@@ -32,16 +32,24 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	ub.push_back(vector3(a_pOther->m_m4ToWorld[2][0], a_pOther->m_m4ToWorld[2][1], a_pOther->m_m4ToWorld[2][2]));
 
 	for (int i = 0; i < 3; i++)
+	{
 		for (int j = 0; j < 3; j++)
+		{
 			R[i][j] = glm::dot(ua[i], ub[j]);
+		}
+	}
 
-	vector3 t = m_v3Center - a_pOther->m_v3Center;
+	vector3 t = GetCenterGlobal() - a_pOther->GetCenterGlobal();
 
 	t = vector3(glm::dot(t, ua[0]), glm::dot(t, ua[1]), glm::dot(t, ua[2]));
 
 	for (int i = 0; i < 3; i++)
+	{
 		for (int j = 0; j < 3; j++)
+		{
 			AbsR[i][j] = glm::abs(R[i][j]) + glm::epsilon<float>();
+		}
+	}
 
 	//test axes A0 A1 A2
 	for (int i = 0; i < 3; i++) {
@@ -123,7 +131,7 @@ bool MyRigidBody::IsColliding(MyRigidBody* const a_pOther)
 	{
 		uint nResult = SAT(a_pOther);
 
-		if (nResult == 1) //The SAT shown they are colliding
+		if (nResult != 1) //The SAT shown they are colliding
 		{
 			this->AddCollisionWith(a_pOther);
 			a_pOther->AddCollisionWith(this);
