@@ -26,8 +26,20 @@ Octant::Octant(uint a_nMaxLevel, uint a_nIdealEntityCount)
 
 	//The following is a made-up size, you need to make sure it is measuring all the object boxes in the world
 	std::vector<vector3> lMinMax;
-	lMinMax.push_back(vector3(-50.0f));
-	lMinMax.push_back(vector3(25.0f));
+	//vector3 v3Min = vector3(m_pEntityMngr->GetEntity(m_EntityList[0])->GetPosition());
+	//vector3 v3Max = v3Min;
+	//for (uint i = 1; i < m_pEntityMngr->GetEntityCount(); i++)
+	//{
+	//	vector3 v3Temp = vector3(m_pEntityMngr->GetEntity(m_EntityList[i])->GetPosition());
+	//	if (v3Temp.x < v3Min.x) { v3Min.x = v3Temp.x; }
+	//	if (v3Temp.y < v3Min.y) { v3Min.y = v3Temp.y; }
+	//	if (v3Temp.z < v3Min.z) { v3Min.z = v3Temp.z; }
+	//	if (v3Temp.x > v3Max.x) { v3Max.x = v3Temp.x; }
+	//	if (v3Temp.y > v3Max.y) { v3Max.y = v3Temp.y; }
+	//	if (v3Temp.z > v3Max.z) { v3Max.z = v3Temp.z; }
+	//}
+	lMinMax.push_back(vector3(-34.0f));
+	lMinMax.push_back(vector3(34.0f));
 	RigidBody pRigidBody = RigidBody(lMinMax);
 
 
