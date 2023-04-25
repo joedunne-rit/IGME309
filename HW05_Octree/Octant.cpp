@@ -26,6 +26,7 @@ Octant::Octant(uint a_nMaxLevel, uint a_nIdealEntityCount)
 
 	//The following is a made-up size, you need to make sure it is measuring all the object boxes in the world
 	std::vector<vector3> lMinMax;
+	//Use max/min of entities
 	//vector3 v3Min = m_pEntityMngr->GetEntity(m_EntityList[0])->GetPosition();
 	//vector3 v3Max = v3Min;
 	//for (uint i = 1; i < m_pEntityMngr->GetEntityCount(); i++)
@@ -70,6 +71,8 @@ void Octant::Display(vector3 a_v3Color)
 {
 	//this is meant to be a recursive method, in starter code will only display the root
 	//even if other objects are created
+
+	//Loop through for number of octants
 	m_pModelMngr->AddWireCubeToRenderList(glm::translate(IDENTITY_M4, m_v3Center) *
 		glm::scale(vector3(m_fSize)), a_v3Color);
 }
@@ -88,6 +91,9 @@ void Octant::Subdivide(void)
 bool Octant::ContainsAtLeast(uint a_nEntities)
 {
 	//You need to check how many entity objects live within this octant
+	
+	//Loop through each entity in octant, increment number
+	//If count ever matches a_nEntities, return true
 	return false; //return something for the sake of start up code
 }
 void Octant::AssignIDtoEntity(void)
