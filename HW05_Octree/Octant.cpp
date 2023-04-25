@@ -24,23 +24,31 @@ Octant::Octant(uint a_nMaxLevel, uint a_nIdealEntityCount)
 	//want in it, remember each subdivision will create 8 children for this octant but not all children
 	//of those children will have children of their own
 
-	//The following is a made-up size, you need to make sure it is measuring all the object boxes in the world
 	std::vector<vector3> lMinMax;
-	//Use max/min of entities
-	//vector3 v3Min = m_pEntityMngr->GetEntity(m_EntityList[0])->GetPosition();
-	//vector3 v3Max = v3Min;
-	//for (uint i = 1; i < m_pEntityMngr->GetEntityCount(); i++)
-	//{
-	//	vector3 v3Temp = m_pEntityMngr->GetEntity(m_EntityList[i])->GetPosition();
-	//	if (v3Temp.x < v3Min.x) { v3Min.x = v3Temp.x; }
-	//	if (v3Temp.y < v3Min.y) { v3Min.y = v3Temp.y; }
-	//	if (v3Temp.z < v3Min.z) { v3Min.z = v3Temp.z; }
-	//	if (v3Temp.x > v3Max.x) { v3Max.x = v3Temp.x; }
-	//	if (v3Temp.y > v3Max.y) { v3Max.y = v3Temp.y; }
-	//	if (v3Temp.z > v3Max.z) { v3Max.z = v3Temp.z; }
-	//}
-	lMinMax.push_back(vector3(-34.0f));
-	lMinMax.push_back(vector3(34.0f));
+	
+	//Takes rigidbody of first entity in manager, assigns max/min values of it as a default
+	RigidBody* a_rTempBody = m_pEntityMngr->GetRigidBody(0);
+	vector3 v3Min = a_rTempBody->GetMinGlobal();
+	vector3 v3Max = a_rTempBody->GetMaxGlobal();
+
+	//Loops through every other entity and compares max/min values to default
+	//If a greater max/lower min is found, replaces those values
+	for (uint i = 1; i < m_pEntityMngr->GetEntityCount(); i++)
+	{
+		a_rTempBody = m_pEntityMngr->GetRigidBody(i);
+		vector3 a_v3TempMin = a_rTempBody->GetMinGlobal();
+		vector3 a_v3TempMax = a_rTempBody->GetMaxGlobal();
+		if (a_v3TempMin.x < v3Min.x) { v3Min.x = a_v3TempMin.x; }
+		if (a_v3TempMin.y < v3Min.y) { v3Min.y = a_v3TempMin.y; }
+		if (a_v3TempMin.z < v3Min.z) { v3Min.z = a_v3TempMin.z; }
+		if (a_v3TempMax.x > v3Max.x) { v3Max.x = a_v3TempMax.x; }
+		if (a_v3TempMax.y > v3Max.y) { v3Max.y = a_v3TempMax.y; }
+		if (a_v3TempMax.z > v3Max.z) { v3Max.z = a_v3TempMax.z; }
+	}
+
+	//Pushes values into lMinMax, then creates new rigidbody of root octant
+	lMinMax.push_back(v3Min);
+	lMinMax.push_back(v3Max);
 	RigidBody pRigidBody = RigidBody(lMinMax);
 
 
@@ -94,6 +102,13 @@ bool Octant::ContainsAtLeast(uint a_nEntities)
 	
 	//Loop through each entity in octant, increment number
 	//If count ever matches a_nEntities, return true
+	uint a_uContains = 0;
+	for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++)
+	{
+		//Perform check to see if entity is colliding with octant
+		if (a_uContains >= a_nEntities)
+			return true;
+	}
 	return false; //return something for the sake of start up code
 }
 void Octant::AssignIDtoEntity(void)
