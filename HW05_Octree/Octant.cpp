@@ -26,11 +26,11 @@ Octant::Octant(uint a_nMaxLevel, uint a_nIdealEntityCount)
 
 	//The following is a made-up size, you need to make sure it is measuring all the object boxes in the world
 	std::vector<vector3> lMinMax;
-	//vector3 v3Min = vector3(m_pEntityMngr->GetEntity(m_EntityList[0])->GetPosition());
+	//vector3 v3Min = m_pEntityMngr->GetEntity(m_EntityList[0])->GetPosition();
 	//vector3 v3Max = v3Min;
 	//for (uint i = 1; i < m_pEntityMngr->GetEntityCount(); i++)
 	//{
-	//	vector3 v3Temp = vector3(m_pEntityMngr->GetEntity(m_EntityList[i])->GetPosition());
+	//	vector3 v3Temp = m_pEntityMngr->GetEntity(m_EntityList[i])->GetPosition();
 	//	if (v3Temp.x < v3Min.x) { v3Min.x = v3Temp.x; }
 	//	if (v3Temp.y < v3Min.y) { v3Min.y = v3Temp.y; }
 	//	if (v3Temp.z < v3Min.z) { v3Min.z = v3Temp.z; }
