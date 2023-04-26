@@ -28,27 +28,41 @@ Octant::Octant(uint a_nMaxLevel, uint a_nIdealEntityCount)
 	
 	//Takes rigidbody of first entity in manager, assigns max/min values of it as a default
 	RigidBody* a_rTempBody = m_pEntityMngr->GetRigidBody(0);
-	vector3 v3Min = a_rTempBody->GetMinGlobal();
-	vector3 v3Max = a_rTempBody->GetMaxGlobal();
+	//vector3 v3Min = a_rTempBody->GetMinGlobal();
+	//vector3 v3Max = a_rTempBody->GetMaxGlobal();
+	float a_fMin = 0.0f;
+	float a_fMax = 0.0f;
 
 	//Loops through every other entity and compares max/min values to default
 	//If a greater max/lower min is found, replaces those values
-	for (uint i = 1; i < m_pEntityMngr->GetEntityCount(); i++)
+	//for (uint i = 1; i < m_pEntityMngr->GetEntityCount(); i++)
+	//{
+	//	a_rTempBody = m_pEntityMngr->GetRigidBody(i);
+	//	vector3 a_v3TempMin = a_rTempBody->GetMinGlobal();
+	//	vector3 a_v3TempMax = a_rTempBody->GetMaxGlobal();
+	//	if (a_v3TempMin.x < v3Min.x) { v3Min.x = a_v3TempMin.x; }
+	//	if (a_v3TempMin.y < v3Min.y) { v3Min.y = a_v3TempMin.y; }
+	//	if (a_v3TempMin.z < v3Min.z) { v3Min.z = a_v3TempMin.z; }
+	//	if (a_v3TempMax.x > v3Max.x) { v3Max.x = a_v3TempMax.x; }
+	//	if (a_v3TempMax.y > v3Max.y) { v3Max.y = a_v3TempMax.y; }
+	//	if (a_v3TempMax.z > v3Max.z) { v3Max.z = a_v3TempMax.z; }
+	//}
+	for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++)
 	{
 		a_rTempBody = m_pEntityMngr->GetRigidBody(i);
 		vector3 a_v3TempMin = a_rTempBody->GetMinGlobal();
 		vector3 a_v3TempMax = a_rTempBody->GetMaxGlobal();
-		if (a_v3TempMin.x < v3Min.x) { v3Min.x = a_v3TempMin.x; }
-		if (a_v3TempMin.y < v3Min.y) { v3Min.y = a_v3TempMin.y; }
-		if (a_v3TempMin.z < v3Min.z) { v3Min.z = a_v3TempMin.z; }
-		if (a_v3TempMax.x > v3Max.x) { v3Max.x = a_v3TempMax.x; }
-		if (a_v3TempMax.y > v3Max.y) { v3Max.y = a_v3TempMax.y; }
-		if (a_v3TempMax.z > v3Max.z) { v3Max.z = a_v3TempMax.z; }
+		if (a_v3TempMin.x < a_fMin) { a_fMin = a_v3TempMin.x; }
+		if (a_v3TempMin.y < a_fMin) { a_fMin = a_v3TempMin.y; }
+		if (a_v3TempMin.z < a_fMin) { a_fMin = a_v3TempMin.z; }
+		if (a_v3TempMax.x > a_fMax) { a_fMax = a_v3TempMax.x; }
+		if (a_v3TempMax.y > a_fMax) { a_fMax = a_v3TempMax.y; }
+		if (a_v3TempMax.z > a_fMax) { a_fMax = a_v3TempMax.z; }
 	}
 
 	//Pushes values into lMinMax, then creates new rigidbody of root octant
-	lMinMax.push_back(v3Min);
-	lMinMax.push_back(v3Max);
+	lMinMax.push_back(vector3(a_fMin));
+	lMinMax.push_back(vector3(a_fMax));
 	RigidBody pRigidBody = RigidBody(lMinMax);
 
 
@@ -69,11 +83,24 @@ bool Octant::IsColliding(uint a_uRBIndex)
 	//If the index given is larger than the number of elements in the bounding object there is no collision
 	//As the Octree will never rotate or scale this collision is as easy as an Axis Alligned Bounding Box
 	//Get all vectors in global space (the octant ones are already in Global)
+
+	RigidBody* a_rTempBody = m_pEntityMngr->GetRigidBody(a_uRBIndex);
+	vector3 a_v3Min = a_rTempBody->GetMinGlobal();
+	vector3 a_v3Max = a_rTempBody->GetMaxGlobal();
+	if (a_v3Min.x > m_v3Max.x) return false;
+	if (a_v3Min.y > m_v3Max.y) return false;
+	if (a_v3Min.z > m_v3Max.z) return false;
+	if (a_v3Max.x < m_v3Min.x) return false;
+	if (a_v3Max.y < m_v3Min.y) return false;
+	if (a_v3Max.z < m_v3Min.z) return false;
 	return true; // for the sake of startup code
 }
 void Octant::Display(uint a_nIndex, vector3 a_v3Color)
 {
 	// Display the specified octant
+	//Get octant first
+	//Octant* a_oTemp = m_pEntityMngr->Get
+	//m_pModelMngr->AddWireCubeToRenderList(glm::translate(IDENTITY_M4, a_oTemp->))
 }
 void Octant::Display(vector3 a_v3Color)
 {
