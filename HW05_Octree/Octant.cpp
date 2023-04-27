@@ -99,8 +99,18 @@ void Octant::Display(uint a_nIndex, vector3 a_v3Color)
 {
 	// Display the specified octant
 	//Get octant first
+	m_pModelMngr->ClearRenderList();
 	//Octant* a_oTemp = m_pEntityMngr->Get
 	//m_pModelMngr->AddWireCubeToRenderList(glm::translate(IDENTITY_M4, a_oTemp->))
+	for (uint i = 0; i < m_lChild.size(); i++)
+	{
+		if (m_lChild[i]->m_uID == a_nIndex)
+		{
+			m_pModelMngr->AddWireCubeToRenderList(glm::translate(IDENTITY_M4, m_lChild[i]->GetCenterGlobal()) *
+				glm::scale(vector3(m_lChild[i]->m_fSize)), a_v3Color);
+			return;
+		}
+	}
 }
 void Octant::Display(vector3 a_v3Color)
 {
@@ -110,6 +120,10 @@ void Octant::Display(vector3 a_v3Color)
 	//Loop through for number of octants
 	m_pModelMngr->AddWireCubeToRenderList(glm::translate(IDENTITY_M4, m_v3Center) *
 		glm::scale(vector3(m_fSize)), a_v3Color);
+	for (uint i = 0; i < 8; i++)
+	{
+		if (m_pChild[i] != nullptr){ m_pChild[i]->Display(a_v3Color); }
+	}
 }
 void Octant::Subdivide(void)
 {
@@ -133,6 +147,7 @@ bool Octant::ContainsAtLeast(uint a_nEntities)
 	for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++)
 	{
 		//Perform check to see if entity is colliding with octant
+		if (IsColliding(i))
 		if (a_uContains >= a_nEntities)
 			return true;
 	}
