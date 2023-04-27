@@ -113,14 +113,20 @@ void Octant::Display(uint a_nIndex, vector3 a_v3Color)
 	}
 	for (uint i = 0; i < 8; i++)
 	{
-		if (m_pChild[i]->m_uID == a_nIndex)
+		if (m_pChild[i] != nullptr)
 		{
-			m_pModelMngr->AddWireCubeToRenderList(glm::translate(IDENTITY_M4, m_pChild[i]->GetCenterGlobal()) *
-				glm::scale(vector3(m_pChild[i]->m_fSize)), a_v3Color);
-			return;
+			if (m_pChild[i]->m_uID == a_nIndex)
+			{
+				m_pModelMngr->AddWireCubeToRenderList(glm::translate(IDENTITY_M4, m_pChild[i]->GetCenterGlobal()) *
+					glm::scale(vector3(m_pChild[i]->m_fSize)), a_v3Color);
+				return;
+			}
+			else
+			{
+				m_pChild[i]->Display(a_nIndex, a_v3Color);
+			}
 		}
 	}
-	//Recur method to find child taht does match given index
 }
 void Octant::Display(vector3 a_v3Color)
 {
@@ -148,7 +154,7 @@ void Octant::Subdivide(void)
 
 	//Subdivide the space and allocate 8 children
 	vector3 a_v3NewCenter;
-	uint a_uID = m_uID++;
+	uint a_uID = m_uID + 1;
 	uint a_uLevel = m_uLevel;
 	a_uLevel++;
 
